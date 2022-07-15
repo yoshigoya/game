@@ -43,6 +43,7 @@ public class AnimationWindow extends BaseWindow implements ActionListener, KeyLi
 
   public void startAnimation() {
     if (!animationRunning) {
+      this.canvas.createBufferStrategy();
       this.animationTimer.start();
       animationRunning = true;
       logger.debug("Aimation started");

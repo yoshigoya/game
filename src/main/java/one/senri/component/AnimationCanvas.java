@@ -14,6 +14,7 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.Toolkit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,13 +31,17 @@ public class AnimationCanvas extends Canvas {
     this.model = model;
   }
 
+  public void createBufferStrategy() {
+    this.createBufferStrategy(2);
+  }
+
   @Override
   public void paint(Graphics g) {
     Dimension panelSize = this.getSize();
     center = new Point(panelSize.width / 2, panelSize.height / 2);
 
     super.paint(g);
-    Graphics2D g2d = (Graphics2D)g.create();
+    Graphics2D g2d = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
     g2d.setRenderingHint(
         RenderingHints.KEY_ANTIALIASING,
         RenderingHints.VALUE_ANTIALIAS_ON);
@@ -53,8 +58,10 @@ public class AnimationCanvas extends Canvas {
 
     g2d.setColor(Color.WHITE);
 
-    model.draw(g2d);
-    
+    model.draw(g2d);    
     g2d.dispose();
+
+    this.getBufferStrategy().show();
+    Toolkit.getDefaultToolkit().sync();
   }
 }
