@@ -29,6 +29,7 @@ public class AnimationCanvas extends Canvas {
     super();
     this.backgroundColor = Color.BLACK;
     this.model = model;
+    this.setFocusable(false);
   }
 
   public void createBufferStrategy() {

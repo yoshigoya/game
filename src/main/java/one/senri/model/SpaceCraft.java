@@ -5,7 +5,12 @@ import java.awt.geom.Point2D;
 import one.senri.model.SpaceObject;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class SpaceCraft extends SpaceObject {
+  private static final Logger logger = LogManager.getLogger(SpaceFighterModel.class);
+  
   protected Polygon[] polygons;
   protected Vector2D velocity;
 
@@ -26,6 +31,7 @@ public class SpaceCraft extends SpaceObject {
 
   public SpaceCraft(Point2D.Double position) {
     super(position);
+    this.velocity = new Vector2D(0.0, 0.0);
   }
 
   @Override
@@ -106,5 +112,20 @@ public class SpaceCraft extends SpaceObject {
 
   public void resetVelocity() {
     velocity = new Vector2D(0.0, 0.0);
+  }
+
+  public boolean contains(Point2D.Double p) {
+    boolean hit = false;
+    for (Polygon polygon : polygons) {
+      Polygon polygon2 =
+        new Polygon(polygon.xpoints, polygon.ypoints, polygon.npoints);
+      polygon2.translate((int)getPosition().getX(), (int)getPosition().getY());
+      hit = polygon2.contains(p);
+      if (hit) {
+        logger.debug("HIT!!");
+        break;
+      }
+    }
+    return hit;
   }
 }

@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import one.senri.model.SpaceObject;
 import one.senri.utility.Utility2D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.logging.log4j.LogManager;
@@ -16,13 +14,13 @@ public class DarkFighter extends SpaceCraft {
   private static final Logger logger = LogManager.getLogger(DarkFighter.class);
 
   public DarkFighter() {
-    super();
-    createDarkFighterPolygon();
-    velocity = new Vector2D(0.0, 0.0);
+    this(new Point2D.Double(), new Point2D.Double());
   }
 
   public DarkFighter(Point2D.Double target, Point2D.Double position) {
     super(position);
+    createDarkFighterPolygon();
+    velocity = new Vector2D(target.x - this.getPosition().x, target.y - this.getPosition().y).normalize();
   }
 
   private void createDarkFighterPolygon() {

@@ -5,14 +5,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 import javax.swing.Timer;
+
 import one.senri.component.AnimationCanvas;
 import one.senri.model.SpaceFighterModel;
 import one.senri.window.BaseWindow;
+import one.senri.event.SpaceFighterEventListener;
+import one.senri.event.SpaceFighterEvent;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AnimationWindow extends BaseWindow implements ActionListener, KeyListener {
+public class AnimationWindow extends BaseWindow implements ActionListener, KeyListener, MouseListener, SpaceFighterEventListener {
   static Logger logger = LogManager.getLogger(AnimationWindow.class);
 
   private int framesPerSec;
@@ -38,7 +45,10 @@ public class AnimationWindow extends BaseWindow implements ActionListener, KeyLi
     this.gameModel = new SpaceFighterModel();
     canvas = new AnimationCanvas(this.gameModel);
     add(canvas, BorderLayout.CENTER);
+
     addKeyListener(this);
+    canvas.addMouseListener(this);
+    this.gameModel.addSpaceFighterEventListener(this);
   }
 
   public void startAnimation() {
@@ -84,6 +94,12 @@ public class AnimationWindow extends BaseWindow implements ActionListener, KeyLi
         break;
       case KeyEvent.VK_SPACE:
         this.gameModel.launchMissile();
+        break;
+      case KeyEvent.VK_Q:
+        quit(new SpaceFighterEvent());
+        break;
+      case KeyEvent.VK_P:
+        this.gameModel.pause();
         break;
       default:
         break;
@@ -134,5 +150,32 @@ public class AnimationWindow extends BaseWindow implements ActionListener, KeyLi
 
   public int getFPS() {
     return this.framesPerSec;
+  }
+
+  // MouseListener interfaces
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    gameModel.clicked(e.getPoint());
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+  }
+
+  @Override
+  public void mousePressed(MouseEvent e) {
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+  }
+
+  @Override
+  public void quit(SpaceFighterEvent e) {
+    this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
   }
 }
